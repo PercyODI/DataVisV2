@@ -42,6 +42,7 @@ app.use(sassMiddleware({
   sourceMap: true
 }));
 app.use(express.static('public'));
+app.use('/node_modules', express.static('node_modules'));
 
 app.use('/', index);
 app.use('/users', users);
