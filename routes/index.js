@@ -12,21 +12,22 @@ router.get('/cp/latest', function (req, res, next) {
   var files = fs.readdirSync(path.join("public", "cp"));
 
   var splits = [];
-  var regPattern = /(\d+)_(\d+).js/;
+  var regPattern = /(\d+)_(\d+).*\.js/;
   for (var i = 0; i < files.length; i++) {
     var matches = files[i].match(regPattern);
     if(matches != null || matches != undefined) {
-      splits.push({chapter: matches[1], section: matches[2]})
+      splits.push({filename: matches[0], chapter: parseInt(matches[1]), section: parseInt(matches[2])})
     }
   }
-  var latestChapter = Math.max(...splits.map(x => parseInt(x.chapter)));
+  var latestChapter = Math.max(...splits.map(x => x.chapter));
   var latestSection = Math.max(...splits.filter(x => x.chapter == latestChapter).map(x => x.section));
+  var latestFile = splits.filter(x => x.chapter === latestChapter && x.section === latestSection)[0];
 
   // console.log(latestChapter + " - " + latestSection);
   // res.send('See Console');
   res.render('cp', { 
-    title: `D3 Testing: ${latestChapter}_${latestSection}`, 
-    name: `${latestChapter}_${latestSection}`
+    title: `D3 Testing: ${latestFile.chapter}_${latestFile.section}`, 
+    javascriptFile: latestFile.filename
   });
   // req.params.name })  ;
 })
