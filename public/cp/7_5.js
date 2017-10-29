@@ -3,63 +3,55 @@ var h = 300;
 var barPadding = 1;
 var padding = 20;
 
-var dataset = [
-    [5, 20],
-    [480, 90],
-    [250, 50],
-    [100, 33],
-    [330, 95],
-    [410, 12],
-    [475, 44],
-    [25, 67],
-    [85, 21],
-    [220, 88],
-    [900, 650]
-];
+var parseTime = d3.timeParse("%m/%d/%y");
 
-var xScale = d3
-    .scaleLinear()
-    .domain([
-        0, d3.max(dataset, d => d[0])
-    ])
-    .range([padding * 2, w - (padding * 2)]);
+var rowConverter = d => {
+    return {
+        Date: parseTime(d.Date),
+        Amount: parseInt(d.Amount)
+    };
+};
 
-var yScale = d3
-    .scaleLinear()
-    .domain([
-        0, d3.max(dataset, d => d[1])
-    ])
-    .range([h - padding, padding]);
+var formatTime = d3.timeFormat("%b %e");
+const radius = 5;
 
-var aScale = d3.scaleSqrt()
-    .domain([0, d3.max(dataset, d => d[1])])
-    .range([0, 10]);
+var test = d3.csv("data/time_scale_data.csv", data => {
+    var dataset = data.map(d => rowConverter(d));
+    var xScale = d3.scaleTime()
+        .domain([
+            d3.min(dataset, d => d.Date),
+            d3.max(dataset, d => d.Date)
+        ])
+        .range([padding, w - padding]);
 
-var svg = d3
-    .select('body')
-    .append('svg')
-    .attr('width', w)
-    .attr('height', h)
-    .style('border', '1px solid black');
+    var yScale = d3.scaleLinear()
+        .domain([
+            d3.min(dataset, d => d.Amount), 
+            d3.max(dataset, d => d.Amount)
+        ])
+        .range([h - padding, padding]);
 
-svg
-    .selectAll('circle')
-    .data(dataset)
-    .enter()
-    .append('circle')
-    .attr('cx', d => xScale(d[0]))
-    .attr('cy', d => yScale(d[1]))
-    .attr('r', d => aScale(d[1]))
-    .attr('fill', d => `rgb(0, 0, ${Math.round(d * 10)})`);
+    var svg = d3.select("body")
+        .append("svg")
+        .attr("width", w)
+        .attr("height", h)
+        .style("border", "1px solid black");
+    
+    var circles = svg.selectAll("circle")
+        .data(dataset)
+        .enter()
+        .append("circle")
+        .attr("cy", d => yScale(d.Amount))
+        .attr("cx", d => xScale(d.Date))
+        .attr("r", radius)
 
-svg
-    .selectAll('text')
-    .data(dataset)
-    .enter()
-    .append('text')
-    .attr('x', d => xScale(d[0]))
-    .attr('y', d => yScale(d[1]))
-    .attr('font-family', 'sans-serif')
-    .attr('font-size', '11px')
-    .attr('fill', 'red')
-    .text(d => `${d[0]},${d[1]}`);
+    var labels = svg.selectAll("text")
+        .data(dataset)
+        .enter()
+        .append("text")
+        .attr("y", d => yScale(d.Amount))
+        .attr("x", d => xScale(d.Date) + radius + 3)
+        .attr("alignment-baseline", "central")
+        .attr("fill", "grey")
+        .text(d => formatTime(d.Date));
+});
