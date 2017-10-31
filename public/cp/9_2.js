@@ -66,6 +66,8 @@ d3.select("p")
     svg.selectAll("rect")
         .data(dataset)
         .transition()
+        .duration(2000)
+        .ease(d3.easeCircleIn)
         .attr("y", d => h - yScale(d))
         .attr("height", d => yScale(d))
         .attr("fill", function (d) {
@@ -74,6 +76,9 @@ d3.select("p")
     
     svg.selectAll("text")
         .data(dataset)
+        .transition()
+        .duration(2000)
+        .ease(d3.easeCircleIn)
         .text(d => d)
         .attr("x", (d, i) => xScale(i) + xScale.bandwidth() / 2)
         .attr("y", d => h - yScale(d) + 14);

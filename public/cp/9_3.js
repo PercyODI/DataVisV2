@@ -1,7 +1,7 @@
 // Add elements to HTML because I didn't know this was happening!
 d3.select("body")
     .append("p")
-    .text("Click on this text to update the chart with new data values (once).")
+    .text("Clock on this text to update the chart with new data values as many times as you like!")
 
 //Width and height
 var w = 600;
@@ -60,12 +60,21 @@ svg.selectAll("text")
     
 d3.select("p")
 .on("click", () =>{
-    dataset = [ 11, 12, 15, 20, 18, 17, 16, 18, 23, 25,
-        5, 10, 13, 19, 21, 25, 22, 18, 15, 13 ];
+    var numValues = dataset.length;
+    dataset = [];
+    for(var i = 0; i < numValues; i++) {
+        var newNumber = Math.floor(Math.random() * 25);
+        dataset.push(newNumber);
+    }
+
+    yScale.domain([0, d3.max(dataset)]);
 
     svg.selectAll("rect")
         .data(dataset)
         .transition()
+        .delay((d, i) => i / dataset.length * 300)
+        .duration(500)
+        .ease(d3.easeElasticOut)
         .attr("y", d => h - yScale(d))
         .attr("height", d => yScale(d))
         .attr("fill", function (d) {
@@ -74,6 +83,10 @@ d3.select("p")
     
     svg.selectAll("text")
         .data(dataset)
+        .transition()
+        .delay((d, i) => i / dataset.length * 300)
+        .duration(500)
+        .ease(d3.easeElasticOut)
         .text(d => d)
         .attr("x", (d, i) => xScale(i) + xScale.bandwidth() / 2)
         .attr("y", d => h - yScale(d) + 14);
