@@ -59,7 +59,7 @@ svg.selectAll("text")
 
     
 d3.select("p")
-.on("click", () =>{
+.on("click", () => {
     var numValues = dataset.length;
     dataset = [];
     for(var i = 0; i < numValues; i++) {

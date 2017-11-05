@@ -5,32 +5,35 @@ var router = express.Router();
 
 /* GET home page. */
 router.get('/', function (req, res, next) {
-  res.render('index', {title: 'Express'});
+  res.render('index', {
+    title: 'Express'
+  });
 });
 
 router.get('/cp/latest', function (req, res, next) {
-  var files = fs.readdirSync(path.join("public", "cp"));
+  var pathInit = path.join("public", "cp");
+  var files = fs.readdirSync(pathInit);
 
   var splits = [];
-  var regPattern = /(\d+)_(\d+).*\.js/;
+  var regPattern = /(\d+)_(\d+).*\.(js|ts)/;
   for (var i = 0; i < files.length; i++) {
     var matches = files[i].match(regPattern);
     if (matches != null || matches != undefined) {
       splits.push({
         filename: matches[0],
         chapter: parseInt(matches[1]),
-        section: parseInt(matches[2])
+        section: parseInt(matches[2]),
+        file: files[i]
       })
     }
   }
   var latestChapter = Math.max(...splits.map(x => x.chapter));
   var latestSection = Math.max(...splits.filter(x => x.chapter == latestChapter).map(x => x.section));
   var latestFile = splits.filter(x => x.chapter === latestChapter && x.section === latestSection)[0];
-
   // console.log(latestChapter + " - " + latestSection); res.send('See Console');
   res.render('cp', {
     title: `D3 Testing: ${latestFile.chapter}_${latestFile.section}`,
-    javascriptFile: latestFile.filename
+    javascriptFile: latestFile.filename.replace(".ts", ".js")
   });
   // req.params.name })  ;
 })

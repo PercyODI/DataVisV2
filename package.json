@@ -6,6 +6,8 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "@types/d3": "^4.11.0",
+    "@types/shortid": "0.0.29",
     "body-parser": "~1.18.2",
     "cookie-parser": "~1.4.3",
     "d3": "^4.11.0",
@@ -15,11 +17,20 @@
     "morgan": "~1.9.0",
     "node-sass-middleware": "0.9.8",
     "pug": "2.0.0-beta11",
-    "serve-favicon": "~2.4.5"
+    "serve-favicon": "~2.4.5",
+    "shortid": "~2.2.8"
   },
   "devDependencies": {
+    "browserify": "^14.5.0",
+    "browserify-middleware": "^8.0.0",
     "connect-livereload": "^0.6.0",
     "eslint": "^4.9.0",
-    "livereload": "^0.6.3"
+    "grunt": "^1.0.1",
+    "grunt-contrib-copy": "^1.0.0",
+    "grunt-contrib-watch": "^1.0.0",
+    "grunt-ts": "^6.0.0-beta.17",
+    "livereload": "^0.6.3",
+    "tsify": "^3.0.3",
+    "typescript": "^2.6.1"
   }
 }
